@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JU AI | Features</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <i class="fa-solid fa-heart-pulse"></i>JU<span> AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html" class="active">Features</a></li>
+      <li><a href="how-it-works.html">How it Works</a></li>
+      <li><a href="detect.html" class="nav-cta">Detect Disease</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+
+    <!-- Page hero -->
+    <div class="page-hero">
+      <div class="hero-eyebrow"><i class="fa-solid fa-star"></i> Core Capabilities</div>
+      <h1 class="page-hero-title">Built for better<br>health decisions</h1>
+      <p class="page-hero-sub">Three pillars that make JU AI your most reliable first step when something feels wrong.</p>
+    </div>
+
+    <!-- Feature cards — expanded -->
+    <div class="features-grid features-grid-page">
+
+      <div class="feature-card-large">
+        <div class="fcl-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="fcl-body">
+          <div class="fcl-tag">Intelligent</div>
+          <h2 class="fcl-title">Smart Symptom Analysis</h2>
+          <p>Our AI model reads your natural language description and maps it to potential conditions with medical-grade precision. It understands context — not just keywords — so it picks up on combinations of symptoms that point to specific diagnoses, the same way a doctor would during triage.</p>
+          <ul class="fcl-list">
+            <li><i class="fa-solid fa-check"></i> Natural language understanding — write exactly how you feel</li>
+            <li><i class="fa-solid fa-check"></i> Symptom combination analysis, not just single-symptom matching</li>
+            <li><i class="fa-solid fa-check"></i> Confidence-ranked results for transparency</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature-card-large">
+        <div class="fcl-icon"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="fcl-body">
+          <div class="fcl-tag">Location-Aware</div>
+          <h2 class="fcl-title">Find Care Near You</h2>
+          <p>Using your city or area, JU AI surfaces the nearest top-rated hospitals and clinics. You get the full picture: name, address, phone number, and an embedded map — so you can navigate straight there without any extra searching.</p>
+          <ul class="fcl-list">
+            <li><i class="fa-solid fa-check"></i> Works for any city or region globally</li>
+            <li><i class="fa-solid fa-check"></i> Hospital name, address & phone in one place</li>
+            <li><i class="fa-solid fa-check"></i> Embedded map so you can navigate immediately</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature-card-large">
+        <div class="fcl-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div class="fcl-body">
+          <div class="fcl-tag">Fast</div>
+          <h2 class="fcl-title">Results in Under 10 Seconds</h2>
+          <p>No appointments to schedule, no waiting rooms just to get a preliminary read on what might be happening. From the moment you submit your symptoms, you get a full breakdown — potential condition, recommended medications, actionable steps, and specialist types — in seconds.</p>
+          <ul class="fcl-list">
+            <li><i class="fa-solid fa-check"></i> Average response time under 10 seconds</li>
+            <li><i class="fa-solid fa-check"></i> Recommended medications listed clearly</li>
+            <li><i class="fa-solid fa-check"></i> Specialist types to consult, tailored to the condition</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature-card-large">
+        <div class="fcl-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="fcl-body">
+          <div class="fcl-tag">Safe</div>
+          <h2 class="fcl-title">Responsible AI by Design</h2>
+          <p>JU AI is a decision-support tool, not a replacement for a doctor. Every result includes a clear disclaimer and directs you toward qualified medical professionals. The system is designed to get you to the right care faster — not to replace it.</p>
+          <ul class="fcl-list">
+            <li><i class="fa-solid fa-check"></i> Clear medical disclaimers on every result</li>
+            <li><i class="fa-solid fa-check"></i> Always directs to real hospitals, not self-treatment</li>
+            <li><i class="fa-solid fa-check"></i> No data stored — your symptoms stay private</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA strip -->
+    <div class="page-cta-strip">
+      <div class="pcs-body">
+        <div class="pcs-title">Ready to try it?</div>
+        <div class="pcs-sub">Enter your symptoms and get results in seconds.</div>
+      </div>
+      <a href="detect.html" class="btn btn-primary">Analyze Symptoms <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 JU AI. All rights reserved. &nbsp;·&nbsp; Not a substitute for professional medical advice.</p>
+  </footer>
+
+  <button id="scroll-to-top" class="scroll-to-top-btn" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+  <script>
+    const scrollBtn = document.getElementById('scroll-to-top');
+    window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 300));
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+</body>
+</html>

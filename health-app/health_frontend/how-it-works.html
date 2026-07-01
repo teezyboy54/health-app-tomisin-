@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JU AI | How it Works</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Result mockup for Step 3 ── */
+    .result-mockup {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 1.25rem;
+      box-shadow: 0 8px 32px rgba(10, 22, 40, 0.1);
+    }
+
+    .rm-banner {
+      background: linear-gradient(135deg, #0A1628, #1a3566);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rm-banner::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(0, 201, 167, 0.15), transparent 70%);
+    }
+
+    .rm-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 100px;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .rm-disease {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #00C9A7;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .rm-sub {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 0.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .rm-body {
+      padding: 1rem 1.25rem;
+      background: white;
+    }
+
+    .rm-warning {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.75rem;
+      color: #92400E;
+      margin-bottom: 1rem;
+    }
+
+    .rm-warning i {
+      color: #D97706;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 0.7rem;
+    }
+
+    .rm-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .rm-section-label i {
+      color: var(--teal);
+    }
+
+    .rm-hospital {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: var(--slate-50);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .rm-hospital-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 201, 167, 0.12);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--teal);
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .rm-hospital-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .rm-hospital-addr,
+    .rm-hospital-phone {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-top: 0.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .rm-hospital-phone {
+      color: var(--teal);
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    .rm-hospital-addr i,
+    .rm-hospital-phone i {
+      font-size: 0.65rem;
+    }
+
+    /* Fake map */
+    .rm-map {
+      background: linear-gradient(135deg, #e8f4f8, #d4eaf5);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rm-map::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .rm-map-pin {
+      font-size: 1.6rem;
+      color: #DC2626;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .rm-map-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #0A1628;
+      background: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 3-col info grid */
+    .rm-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    .rm-info-col {
+      background: var(--slate-50);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem;
+    }
+
+    .rm-info-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rm-info-title i {
+      color: var(--teal);
+      font-size: 0.6rem;
+    }
+
+    .rm-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .rm-list li {
+      font-size: 0.75rem;
+      color: var(--text-main);
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .rm-list li:last-child {
+      border-bottom: none;
+    }
+
+    .rm-list li::before {
+      content: '·';
+      color: var(--teal);
+      font-weight: 900;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    @media (max-width: 500px) {
+      .rm-info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <i class="fa-solid fa-heart-pulse"></i>JU<span> AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="how-it-works.html" class="active">How it Works</a></li>
+      <li><a href="detect.html" class="nav-cta">Detect Disease</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+
+    <div class="page-hero">
+      <div class="hero-eyebrow"><i class="fa-solid fa-list-check"></i> Process</div>
+      <h1 class="page-hero-title">From symptom to care<br>in three steps</h1>
+      <p class="page-hero-sub">The whole process — from describing how you feel to having a hospital address in hand —
+        takes under a minute.</p>
+    </div>
+
+    <!-- Steps timeline -->
+    <div class="steps-timeline">
+
+      <div class="timeline-step">
+        <div class="ts-number">
+          <span>1</span>
+        </div>
+        <div class="ts-connector"></div>
+        <div class="ts-card">
+          <div class="ts-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+          <h2 class="ts-title">Describe Your Symptoms</h2>
+          <p class="ts-body">Open the Detect page and type exactly how you're feeling in plain language. No medical
+            terminology needed — write the way you'd explain it to a friend. Mention when the symptoms started, how
+            severe they are, and anything else that feels relevant.</p>
+          <div class="ts-tip">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tip:</strong> The more detail you include, the more accurate your result. "Severe headache behind my
+            eyes with a fever for two days" gives far better results than just "headache."
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="ts-number">
+          <span>2</span>
+        </div>
+        <div class="ts-connector"></div>
+        <div class="ts-card">
+          <div class="ts-icon"><i class="fa-solid fa-map-pin"></i></div>
+          <h2 class="ts-title">Enter Your Location</h2>
+          <p class="ts-body">Type your city, district, or neighbourhood into the location field. This is how JU AI finds
+            medical facilities relevant to where you actually are. You don't need to enable GPS — a city name is enough.
+          </p>
+          <div class="ts-tip">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tip:</strong> Be as specific as you can. "Ikeja, Lagos" will return more relevant hospitals than
+            just "Nigeria."
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="ts-number">
+          <span>3</span>
+        </div>
+        <div class="ts-card">
+          <div class="ts-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          <h2 class="ts-title">Review Your Results</h2>
+          <p class="ts-body">Within seconds a results popup opens with everything you need — no extra steps, no
+            searching. Here's exactly what you'll see:</p>
+
+          <!-- Visual result mockup -->
+          <div class="result-mockup">
+
+            <!-- Disease banner -->
+            <div class="rm-banner">
+              <div class="rm-badge"><i class="fa-solid fa-circle-dot"></i> Potential Match</div>
+              <div class="rm-disease">Viral Sinusitis</div>
+              <div class="rm-sub">AI's best match based on your symptoms</div>
+            </div>
+
+            <div class="rm-body">
+
+              <!-- Warning -->
+              <div class="rm-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Not a diagnosis — always confirm with a qualified doctor.</span>
+              </div>
+
+              <!-- Hospital -->
+              <div class="rm-section-label"><i class="fa-solid fa-hospital"></i> Nearest Hospital</div>
+              <div class="rm-hospital">
+                <div class="rm-hospital-icon"><i class="fa-solid fa-hospital-user"></i></div>
+                <div>
+                  <div class="rm-hospital-name">Lagos Island General Hospital</div>
+                  <div class="rm-hospital-addr"><i class="fa-solid fa-location-dot"></i> 1 Broad St, Lagos Island · 1.2
+                    km away</div>
+                  <div class="rm-hospital-phone"><i class="fa-solid fa-phone"></i> +234 1 460 3600</div>
+                </div>
+              </div>
+              <!-- Mock map -->
+              <div class="rm-map">
+                <div class="rm-map-pin"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="rm-map-label">Lagos Island General Hospital</div>
+              </div>
+
+              <!-- 3 info cols -->
+              <div class="rm-info-grid">
+                <div class="rm-info-col">
+                  <div class="rm-info-title"><i class="fa-solid fa-pills"></i> Medications</div>
+                  <ul class="rm-list">
+                    <li>Paracetamol</li>
+                    <li>Ibuprofen</li>
+                    <li>Nasal decongestant</li>
+                  </ul>
+                </div>
+                <div class="rm-info-col">
+                  <div class="rm-info-title"><i class="fa-solid fa-lightbulb"></i> Actions</div>
+                  <ul class="rm-list">
+                    <li>Rest &amp; hydrate</li>
+                    <li>Steam inhalation</li>
+                    <li>Avoid cold air</li>
+                  </ul>
+                </div>
+                <div class="rm-info-col">
+                  <div class="rm-info-title"><i class="fa-solid fa-user-doctor"></i> Specialist</div>
+                  <ul class="rm-list">
+                    <li>ENT Specialist</li>
+                    <li>General Practitioner</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- /result-mockup -->
+
+          <div class="ts-tip" style="margin-top:1.25rem;">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>Use the <strong>Start a new analysis</strong> button in the results popup to check a different set of
+              symptoms instantly.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <div class="section-header center" style="margin-bottom:2rem;">
+        <div class="section-eyebrow"><i class="fa-solid fa-circle-question"></i> Common Questions</div>
+        <h2 class="section-heading">Frequently asked</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q"><i class="fa-solid fa-chevron-right"></i> Is this a replacement for a real doctor?</div>
+          <div class="faq-a">No. JU AI is a decision-support tool designed to help you understand your symptoms and get
+            to the right care faster. Always consult a qualified medical professional for diagnosis and treatment.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><i class="fa-solid fa-chevron-right"></i> Is my data stored or shared?</div>
+          <div class="faq-a">Your symptom descriptions and location are sent to the AI model for analysis only. We do
+            not store, log, or share your personal health information.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><i class="fa-solid fa-chevron-right"></i> How accurate are the results?</div>
+          <div class="faq-a">JU AI achieves high accuracy for common conditions when detailed symptoms are provided. For
+            rare or complex conditions, results should be treated as a starting point for a conversation with a doctor,
+            not a final answer.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><i class="fa-solid fa-chevron-right"></i> Does it work outside Nigeria?</div>
+          <div class="faq-a">Yes. The symptom analysis works globally. The hospital finder uses your location, so it
+            will surface nearby facilities wherever you are.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-cta-strip">
+      <div class="pcs-body">
+        <div class="pcs-title">Ready to try it?</div>
+        <div class="pcs-sub">The whole process takes under a minute.</div>
+      </div>
+      <a href="detect.html" class="btn btn-primary">Analyze Symptoms <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 JU AI. All rights reserved. &nbsp;·&nbsp; Not a substitute for professional medical advice.</p>
+  </footer>
+
+  <button id="scroll-to-top" class="scroll-to-top-btn" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+  <script>
+    const scrollBtn = document.getElementById('scroll-to-top');
+    window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 300));
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+</body>
+
+</html>

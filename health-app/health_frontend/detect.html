@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JU AI | Detect Disease</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ════════════════════════════════════════
+       DETECT PAGE — WIZARD POPUPS
+    ════════════════════════════════════════ */
+
+    /* Landing state */
+    .detect-landing {
+      min-height: calc(100vh - 72px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 2rem;
+      position: relative;
+    }
+
+    .detect-landing-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #0A1628, #1E3058);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #00C9A7;
+      margin: 0 auto 2rem;
+      box-shadow: 0 12px 40px rgba(10,22,40,0.2);
+      position: relative;
+    }
+
+    .detect-landing-icon::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 28px;
+      border: 2px solid rgba(0,201,167,0.2);
+    }
+
+    .detect-landing h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #0A1628;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .detect-landing h1 span {
+      color: #00C9A7;
+    }
+
+    .detect-landing p {
+      font-size: 1.05rem;
+      color: #5A7A9A;
+      max-width: 460px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #00C9A7, #00b898);
+      color: #0A1628;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      padding: 1rem 2.5rem;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 8px 32px rgba(0,201,167,0.35);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,201,167,0.45);
+    }
+
+    .detect-trust-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .dtr-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      color: #8FA3BF;
+      font-weight: 500;
+    }
+
+    .dtr-item i { color: #00C9A7; font-size: 0.75rem; }
+
+    /* ════════════════════════════════════════
+       POPUP OVERLAY
+    ════════════════════════════════════════ */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 22, 40, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .popup-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Popup card */
+    .popup-card {
+      background: #fff;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 32px 80px rgba(10,22,40,0.25);
+      overflow: hidden;
+      position: relative;
+      transform: translateY(24px) scale(0.97);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    }
+
+    .popup-overlay.open .popup-card {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* Top accent bar that changes colour per step */
+    .popup-card-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #00C9A7, #4A8FE7);
+    }
+
+    /* Progress dots */
+    .popup-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.25rem 2rem 0;
+    }
+
+    .pp-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #DDE5F0;
+      transition: all 0.3s ease;
+    }
+
+    .pp-dot.active {
+      background: #00C9A7;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .pp-dot.done { background: #00C9A7; opacity: 0.4; }
+
+    /* Popup body */
+    .popup-body {
+      padding: 2rem 2.5rem;
+    }
+
+    .popup-icon {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .popup-icon.navy { background: #0A1628; color: #00C9A7; }
+    .popup-icon.teal { background: rgba(0,201,167,0.12); color: #00C9A7; }
+    .popup-icon.blue { background: rgba(74,143,231,0.12); color: #4A8FE7; }
+
+    .popup-step-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00C9A7;
+      margin-bottom: 0.35rem;
+    }
+
+    .popup-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0A1628;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+    }
+
+    .popup-sub {
+      font-size: 0.9rem;
+      color: #5A7A9A;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Name display chip */
+    .name-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0,201,167,0.1);
+      color: #007a68;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(0,201,167,0.2);
+    }
+
+    /* Input */
+    .popup-input {
+      width: 100%;
+      padding: 0.95rem 1.15rem;
+      border: 1.5px solid #DDE5F0;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.98rem;
+      color: #0A1628;
+      background: #F7F9FC;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .popup-input:focus {
+      border-color: #00C9A7;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(0,201,167,0.1);
+    }
+
+    .popup-input::placeholder { color: #8FA3BF; }
+
+    textarea.popup-input {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    .popup-input-wrap {
+      position: relative;
+    }
+
+    .popup-input-wrap .pi-icon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8FA3BF;
+      font-size: 0.95rem;
+      pointer-events: none;
+    }
+
+    .popup-input-wrap .popup-input { padding-left: 2.75rem; }
+
+    .popup-error {
+      font-size: 0.78rem;
+      color: #DC2626;
+      margin-top: 0.4rem;
+      display: none;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .popup-input.has-error { border-color: #DC2626; background: #FFF5F5; }
+
+    /* Popup footer */
+    .popup-footer {
+      padding: 0 2.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-popup-back {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 1.5px solid #DDE5F0;
+      background: #fff;
+      color: #8FA3BF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-popup-back:hover { border-color: #0A1628; color: #0A1628; }
+    .btn-popup-back.hidden { opacity: 0; pointer-events: none; }
+
+    .btn-popup-next {
+      flex: 1;
+      padding: 0.95rem 1.5rem;
+      background: #0A1628;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-popup-next:hover {
+      background: #132040;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(10,22,40,0.2);
+    }
+
+    .btn-popup-next.green {
+      background: #00C9A7;
+      color: #0A1628;
+      box-shadow: 0 4px 16px rgba(0,201,167,0.3);
+    }
+
+    .btn-popup-next.green:hover {
+      background: #00b898;
+      box-shadow: 0 8px 24px rgba(0,201,167,0.4);
+    }
+
+    /* ════════════════════════════════════════
+       LOADING POPUP
+    ════════════════════════════════════════ */
+    .loading-popup-body {
+      padding: 2.5rem;
+      text-align: center;
+    }
+
+    .lp-pulse {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(0,201,167,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+    }
+
+    .lp-pulse::before, .lp-pulse::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0,201,167,0.12);
+      animation: lp-ripple 2s ease-out infinite;
+    }
+
+    .lp-pulse::after { animation-delay: 0.75s; }
+
+    @keyframes lp-ripple {
+      0%   { transform: scale(1); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .lp-pulse i {
+      font-size: 2rem;
+      color: #00C9A7;
+      z-index: 1;
+      position: relative;
+      animation: lp-beat 1.2s ease-in-out infinite;
+    }
+
+    @keyframes lp-beat {
+      0%,100% { transform: scale(1); }
+      14% { transform: scale(1.15); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.1); }
+      70% { transform: scale(1); }
+    }
+
+    .lp-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0A1628;
+      margin-bottom: 0.4rem;
+    }
+
+    .lp-sub {
+      font-size: 0.88rem;
+      color: #5A7A9A;
+      margin-bottom: 1.75rem;
+    }
+
+    .lp-checklist {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: left;
+    }
+
+    .lp-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      border: 1px solid #DDE5F0;
+      background: #F7F9FC;
+      color: #8FA3BF;
+      transition: all 0.3s ease;
+    }
+
+    .lp-item.active {
+      border-color: #00C9A7;
+      background: rgba(0,201,167,0.07);
+      color: #0A1628;
+    }
+
+    .lp-item.done {
+      border-color: rgba(0,201,167,0.3);
+      background: rgba(0,201,167,0.05);
+      color: #007a68;
+    }
+
+    .lp-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #DDE5F0;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .lp-item.active .lp-dot {
+      background: #00C9A7;
+      animation: pulse-dot 1s infinite;
+    }
+
+    .lp-item.done .lp-dot {
+      background: #00C9A7;
+    }
+
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(0,201,167,0.4); }
+      50% { box-shadow: 0 0 0 5px transparent; }
+    }
+
+    /* ════════════════════════════════════════
+       RESULT POPUP  
+    ════════════════════════════════════════ */
+    .result-popup-card {
+      max-width: 520px;
+    }
+
+    .result-banner {
+      background: linear-gradient(135deg, #0A1628 0%, #1a3566 100%);
+      padding: 2rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-banner::before {
+      content: '';
+      position: absolute;
+      top: -50px; left: 50%;
+      transform: translateX(-50%);
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(0,201,167,0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .result-banner-inner { position: relative; z-index: 1; }
+
+    .result-banner-greeting {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0.6rem;
+    }
+
+    .result-banner-greeting strong { color: rgba(255,255,255,0.85); }
+
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.8);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.85rem;
+      border-radius: 100px;
+      margin-bottom: 0.65rem;
+    }
+
+    .result-disease {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #00C9A7;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .result-banner p {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .result-scroll-body {
+      max-height: 60vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #DDE5F0 transparent;
+    }
+
+    .result-scroll-body::-webkit-scrollbar { width: 4px; }
+    .result-scroll-body::-webkit-scrollbar-thumb { background: #DDE5F0; border-radius: 4px; }
+
+    .result-inner { padding: 1.5rem 2rem; }
+
+    .result-warning {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      font-size: 0.78rem;
+      color: #92400E;
+      margin-bottom: 1.25rem;
+    }
+
+    .result-warning i { color: #D97706; flex-shrink: 0; margin-top: 1px; }
+
+    .hospital-card {
+      background: #F7F9FC;
+      border: 1px solid #DDE5F0;
+      border-radius: 12px;
+      padding: 1.15rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .hospital-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hch-icon {
+      width: 38px; height: 38px;
+      background: rgba(0,201,167,0.12);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00C9A7;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .hospital-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #0A1628;
+    }
+
+    .hospital-address-text {
+      font-size: 0.8rem;
+      color: #5A7A9A;
+      margin-top: 0.1rem;
+    }
+
+    .hospital-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #00C9A7;
+      margin-top: 0.2rem;
+    }
+
+    .map-container {
+      border-radius: 10px;
+      overflow: hidden;
+      height: 170px;
+      border: 1px solid #DDE5F0;
+      margin-top: 0.75rem;
+    }
+
+    .map-container iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    .info-section { margin-bottom: 1.1rem; }
+
+    .info-section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #8FA3BF;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid #DDE5F0;
+    }
+
+    .info-section-title i { color: #00C9A7; }
+
+    #recommended-drugs, #solutions, #doctors {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    #recommended-drugs li, #solutions li, #doctors li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #0A1628;
+      padding: 0.5rem 0.75rem;
+      background: #F7F9FC;
+      border-radius: 8px;
+      border: 1px solid #DDE5F0;
+    }
+
+    #recommended-drugs li::before { content: '💊'; font-size: 0.8rem; }
+    #solutions li::before         { content: '✓'; color: #00C9A7; font-weight: 800; }
+    #doctors li::before           { content: '👨‍⚕️'; font-size: 0.8rem; }
+
+    .result-restart {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: calc(100% - 4rem);
+      margin: 0 2rem 1.75rem;
+      padding: 0.85rem;
+      border-radius: 12px;
+      border: 1.5px solid #DDE5F0;
+      background: #fff;
+      color: #5A7A9A;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .result-restart:hover { border-color: #0A1628; color: #0A1628; }
+
+    @media (max-width: 540px) {
+      .popup-body, .popup-footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .result-inner { padding: 1.25rem 1.5rem; }
+      .result-banner { padding: 1.75rem 1.5rem; }
+      .result-restart { width: calc(100% - 3rem); margin-inline: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <i class="fa-solid fa-heart-pulse"></i>JU<span> AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="how-it-works.html">How it Works</a></li>
+      <li><a href="detect.html" class="nav-cta active">Detect Disease</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Landing page ── -->
+  <div class="detect-landing">
+    <div class="detect-landing-icon">
+      <i class="fa-solid fa-stethoscope"></i>
+    </div>
+    <h1>Ready to check your<br><span>symptoms?</span></h1>
+    <p>Answer three quick questions and our AI will identify potential conditions and find the nearest hospital — in seconds.</p>
+    <button class="btn-start" id="btn-open-wizard">
+      Get Started <i class="fa-solid fa-arrow-right"></i>
+    </button>
+    <div class="detect-trust-row">
+      <div class="dtr-item"><i class="fa-solid fa-shield-halved"></i> Private &amp; secure</div>
+      <div class="dtr-item"><i class="fa-solid fa-bolt"></i> Results in &lt;10 seconds</div>
+      <div class="dtr-item"><i class="fa-solid fa-clock"></i> Available 24/7</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       POPUP 1 — NAME
+  ════════════════════════════════════════ -->
+  <div class="popup-overlay" id="popup-name">
+    <div class="popup-card">
+      <div class="popup-card-bar"></div>
+      <div class="popup-progress">
+        <div class="pp-dot active" id="pdot-1a"></div>
+        <div class="pp-dot" id="pdot-2a"></div>
+        <div class="pp-dot" id="pdot-3a"></div>
+      </div>
+      <div class="popup-body">
+        <div class="popup-icon navy"><i class="fa-solid fa-user"></i></div>
+        <div class="popup-step-label">Step 1 of 3</div>
+        <h2 class="popup-title">What's your name?</h2>
+        <p class="popup-sub">Let's personalise your experience before we dive in.</p>
+        <input type="text" id="input-name" class="popup-input" placeholder="e.g. Emeka, Fatima, James…" autocomplete="given-name" maxlength="60">
+        <div class="popup-error" id="err-name"><i class="fa-solid fa-circle-exclamation"></i> Please enter your name.</div>
+      </div>
+      <div class="popup-footer">
+        <button class="btn-popup-back hidden" aria-hidden="true" tabindex="-1"></button>
+        <button class="btn-popup-next green" id="btn-name-next">
+          Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       POPUP 2 — LOCATION
+  ════════════════════════════════════════ -->
+  <div class="popup-overlay" id="popup-location">
+    <div class="popup-card">
+      <div class="popup-card-bar"></div>
+      <div class="popup-progress">
+        <div class="pp-dot done"></div>
+        <div class="pp-dot active"></div>
+        <div class="pp-dot"></div>
+      </div>
+      <div class="popup-body">
+        <div class="popup-icon teal"><i class="fa-solid fa-map-pin"></i></div>
+        <div class="popup-step-label">Step 2 of 3</div>
+        <h2 class="popup-title">Where are you?</h2>
+        <p class="popup-sub">We'll use your location to find nearby hospitals and clinics.</p>
+        <div class="popup-input-wrap">
+          <i class="fa-solid fa-location-dot pi-icon"></i>
+          <input type="text" id="input-location" class="popup-input" placeholder="e.g. Ikeja, Lagos · Surulere, Lagos" maxlength="100">
+        </div>
+        <div class="popup-error" id="err-location"><i class="fa-solid fa-circle-exclamation"></i> Please enter your location.</div>
+      </div>
+      <div class="popup-footer">
+        <button class="btn-popup-back" id="btn-loc-back"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="btn-popup-next green" id="btn-loc-next">
+          Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       POPUP 3 — SYMPTOMS
+  ════════════════════════════════════════ -->
+  <div class="popup-overlay" id="popup-symptoms">
+    <div class="popup-card">
+      <div class="popup-card-bar"></div>
+      <div class="popup-progress">
+        <div class="pp-dot done"></div>
+        <div class="pp-dot done"></div>
+        <div class="pp-dot active"></div>
+      </div>
+      <div class="popup-body">
+        <div class="popup-icon blue"><i class="fa-solid fa-stethoscope"></i></div>
+        <div class="popup-step-label">Step 3 of 3</div>
+        <h2 class="popup-title">Describe your symptoms</h2>
+        <p class="popup-sub">No medical terms needed — write exactly how you feel. More detail = better results.</p>
+        <textarea id="input-symptoms" class="popup-input" placeholder="e.g. I've had a severe headache behind my eyes, a fever of 39°C, body aches, and extreme fatigue for the past two days…"></textarea>
+        <div class="popup-error" id="err-symptoms"><i class="fa-solid fa-circle-exclamation"></i> Please describe your symptoms.</div>
+      </div>
+      <div class="popup-footer">
+        <button class="btn-popup-back" id="btn-sym-back"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="btn-popup-next green" id="btn-sym-next">
+          Analyze Now <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       POPUP 4 — LOADING
+  ════════════════════════════════════════ -->
+  <div class="popup-overlay" id="popup-loading">
+    <div class="popup-card">
+      <div class="popup-card-bar"></div>
+      <div class="loading-popup-body">
+        <div class="lp-pulse">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="lp-title">Analyzing your symptoms…</div>
+        <div class="lp-sub">Hold tight, <strong id="lp-name"></strong>. Our AI is working.</div>
+        <ul class="lp-checklist">
+          <li class="lp-item active" id="lpi-1"><div class="lp-dot"></div> Processing your symptoms</li>
+          <li class="lp-item" id="lpi-2"><div class="lp-dot"></div> Identifying potential conditions</li>
+          <li class="lp-item" id="lpi-3"><div class="lp-dot"></div> Locating nearest hospital</li>
+          <li class="lp-item" id="lpi-4"><div class="lp-dot"></div> Preparing your results</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       POPUP 5 — RESULTS
+  ════════════════════════════════════════ -->
+  <div class="popup-overlay" id="popup-result">
+    <div class="popup-card result-popup-card">
+      <div class="popup-card-bar"></div>
+
+      <div class="result-banner">
+        <div class="result-banner-inner">
+          <div class="result-banner-greeting">Results for <strong id="result-name"></strong></div>
+          <div class="result-badge"><i class="fa-solid fa-circle-dot"></i> Potential Match</div>
+          <div id="disease-name" class="result-disease">—</div>
+          <p>AI's best match based on your symptoms</p>
+        </div>
+      </div>
+
+      <div class="result-scroll-body">
+        <div class="result-inner">
+
+          <div class="result-warning">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>This is not a medical diagnosis. Please visit a qualified healthcare professional for confirmation and treatment.</span>
+          </div>
+
+          <!-- Hospital -->
+          <div class="hospital-card">
+            <div class="hospital-card-header">
+              <div class="hch-icon"><i class="fa-solid fa-hospital"></i></div>
+              <div>
+                <div id="hospital-name" class="hospital-name">—</div>
+                <div id="hospital-address" class="hospital-address-text">—</div>
+                <div class="hospital-contact">
+                  <i class="fa-solid fa-phone"></i>
+                  <span id="hospital-contact">—</span>
+                </div>
+              </div>
+            </div>
+            <div class="map-container">
+              <iframe id="hospital-map" frameborder="0" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title"><i class="fa-solid fa-pills"></i> Recommended Medications</div>
+            <ul id="recommended-drugs"></ul>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title"><i class="fa-solid fa-lightbulb"></i> Recommended Actions</div>
+            <ul id="solutions"></ul>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title"><i class="fa-solid fa-user-doctor"></i> Specialists to Consult</div>
+            <ul id="doctors"></ul>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="result-restart" id="btn-restart">
+        <i class="fa-solid fa-rotate-left"></i> Start a new analysis
+      </button>
+    </div>
+  </div>
+
+
+  <footer style="text-align:center; padding:2.5rem 0; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);">
+    <p>&copy; 2026 JU AI. All rights reserved. &nbsp;·&nbsp; Not a substitute for professional medical advice.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

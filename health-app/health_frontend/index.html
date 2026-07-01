@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JU AI | Intelligent Disease Detection</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ── Home-page only overrides ── */
+
+    /* Full-bleed dark hero */
+    .home-hero {
+      min-height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      padding: 5rem 0 4rem;
+      position: relative;
+    }
+
+    /* Animated grid background */
+    .home-hero::before {
+      content: '';
+      position: absolute;
+      inset: -72px -5% 0;
+      background:
+        linear-gradient(135deg, #0A1628 0%, #132040 60%, #0f2a50 100%);
+      z-index: -1;
+      border-radius: 0 0 40px 40px;
+    }
+
+    /* Floating grid lines */
+    .home-hero::after {
+      content: '';
+      position: absolute;
+      inset: -72px -5% 0;
+      background-image:
+        linear-gradient(rgba(0,201,167,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,201,167,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: -1;
+      border-radius: 0 0 40px 40px;
+    }
+
+    .hero-left { position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0,201,167,0.15);
+      border: 1px solid rgba(0,201,167,0.3);
+      color: #00C9A7;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+      animation: fadeSlideDown 0.6s ease both;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: #00C9A7;
+      border-radius: 50%;
+      animation: pulse-dot 1.8s infinite;
+    }
+
+    .home-hero h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+      animation: fadeSlideUp 0.7s ease 0.1s both;
+    }
+
+    .home-hero h1 .gradient-text {
+      background: linear-gradient(135deg, #00C9A7, #4A8FE7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .home-hero .hero-sub {
+      color: rgba(255,255,255,0.65);
+      font-size: 1.1rem;
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 2.25rem;
+      animation: fadeSlideUp 0.7s ease 0.2s both;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      animation: fadeSlideUp 0.7s ease 0.3s both;
+    }
+
+    .btn-hero-primary {
+      background: linear-gradient(135deg, #00C9A7, #00b898);
+      color: #0A1628;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.9rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,201,167,0.35);
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,201,167,0.45);
+    }
+
+    .btn-hero-ghost {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+      padding: 0.9rem 1rem;
+    }
+
+    .btn-hero-ghost:hover { color: #ffffff; }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-top: 2.25rem;
+      animation: fadeSlideUp 0.7s ease 0.4s both;
+    }
+
+    .trust-avatars {
+      display: flex;
+    }
+
+    .trust-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid #0A1628;
+      margin-right: -10px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1E3058, #2a4a78);
+    }
+
+    .trust-text { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+    .trust-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+    /* Hero right — mockup card */
+    .hero-right {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeSlideUp 0.8s ease 0.2s both;
+    }
+
+    .mockup-stack {
+      position: relative;
+      width: 340px;
+    }
+
+    /* Background card (depth) */
+    .mockup-bg-card {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: -20px;
+      bottom: -20px;
+      background: rgba(0,201,167,0.08);
+      border: 1px solid rgba(0,201,167,0.15);
+      border-radius: 24px;
+    }
+
+    .mockup-main-card {
+      position: relative;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 1.75rem;
+      overflow: hidden;
+    }
+
+    .mockup-main-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00C9A7, #4A8FE7);
+    }
+
+    .mc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .mc-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .mc-live {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      color: #00C9A7;
+      font-weight: 600;
+    }
+
+    .mc-live-dot {
+      width: 7px; height: 7px;
+      background: #00C9A7;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    /* Symptom input mockup */
+    .mc-input-box {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+    }
+
+    .mc-typing-cursor {
+      display: inline-block;
+      width: 2px; height: 13px;
+      background: #00C9A7;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Progress bar */
+    .mc-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .mc-progress-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .mc-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00C9A7, #4A8FE7);
+      border-radius: 2px;
+      width: 0;
+      animation: fill-bar 2s ease 1s forwards;
+    }
+
+    @keyframes fill-bar { to { width: 78%; } }
+
+    /* Result row */
+    .mc-result-row {
+      background: rgba(0,201,167,0.12);
+      border: 1px solid rgba(0,201,167,0.2);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      opacity: 0;
+      animation: fadeSlideUp 0.5s ease 3s forwards;
+    }
+
+    .mc-result-icon {
+      width: 32px; height: 32px;
+      background: rgba(0,201,167,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00C9A7;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .mc-result-label { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+    .mc-result-value { font-size: 0.9rem; font-weight: 600; color: #ffffff; }
+
+    /* Hospital pin */
+    .mc-hospital-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(74,143,231,0.1);
+      border: 1px solid rgba(74,143,231,0.2);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      opacity: 0;
+      animation: fadeSlideUp 0.5s ease 3.3s forwards;
+    }
+
+    .mc-hospital-icon {
+      width: 32px; height: 32px;
+      background: rgba(74,143,231,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4A8FE7;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .mc-hospital-label { font-size: 0.78rem; color: rgba(255,255,255,0.45); }
+    .mc-hospital-value { font-size: 0.88rem; font-weight: 600; color: #ffffff; }
+    .mc-hospital-dist  { font-size: 0.72rem; color: #00C9A7; font-weight: 500; }
+
+    /* Floating badge */
+    .floating-badge {
+      position: absolute;
+      background: white;
+      border-radius: 12px;
+      padding: 0.7rem 1rem;
+      box-shadow: 0 8px 32px rgba(10,22,40,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #0A1628;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .floating-badge.fb-left {
+      left: -50px;
+      bottom: 60px;
+      animation-delay: 0s;
+    }
+
+    .floating-badge.fb-right {
+      right: -30px;
+      top: 30px;
+      animation-delay: 1s;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    .fb-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .fb-icon.teal  { background: rgba(0,201,167,0.15); color: #00C9A7; }
+    .fb-icon.blue  { background: rgba(74,143,231,0.15); color: #4A8FE7; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 3.5rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-cell {
+      background: white;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .stat-cell:hover { background: var(--slate-50); }
+
+    .stat-cell-value {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .stat-cell-value span { color: var(--teal); }
+
+    .stat-cell-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+      font-weight: 500;
+    }
+
+    /* ── Feature preview strip ── */
+    .feature-strip {
+      margin-bottom: 5rem;
+    }
+
+    .feature-strip-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.75rem;
+    }
+
+    .strip-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .strip-sub {
+      font-size: 1rem;
+      color: var(--text-light);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .feature-cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .fhome-card {
+      border-radius: 20px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: default;
+    }
+
+    .fhome-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+
+    .fhome-card.card-teal {
+      background: linear-gradient(135deg, #0A1628 0%, #0f2a50 100%);
+      border: 1px solid rgba(0,201,167,0.2);
+    }
+
+    .fhome-card.card-blue {
+      background: linear-gradient(135deg, #0f1f3d 0%, #1a3566 100%);
+      border: 1px solid rgba(74,143,231,0.2);
+    }
+
+    .fhome-card.card-light {
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fhome-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      opacity: 0.06;
+    }
+
+    .fhome-card.card-teal::before { background: var(--teal); }
+    .fhome-card.card-blue::before { background: var(--blue-accent); }
+
+    .fhc-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-teal .fhc-icon { background: rgba(0,201,167,0.15); color: var(--teal); }
+    .card-blue .fhc-icon { background: rgba(74,143,231,0.15); color: var(--blue-accent); }
+    .card-light .fhc-icon { background: var(--teal-dim); color: var(--teal); }
+
+    .fhc-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-teal .fhc-title,
+    .card-blue .fhc-title { color: #ffffff; }
+    .card-light .fhc-title { color: var(--navy); }
+
+    .fhc-body {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-teal .fhc-body,
+    .card-blue .fhc-body { color: rgba(255,255,255,0.55); }
+    .card-light .fhc-body { color: var(--text-light); }
+
+    .fhc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+
+    .fhc-link:hover { gap: 0.65rem; }
+
+    .card-teal .fhc-link { color: var(--teal); }
+    .card-blue .fhc-link { color: var(--blue-accent); }
+    .card-light .fhc-link { color: var(--teal); }
+
+    /* ── How it works mini ── */
+    .steps-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .steps-mini::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.6% + 1.5rem);
+      right: calc(16.6% + 1.5rem);
+      height: 2px;
+      background: linear-gradient(90deg, var(--teal), var(--blue-accent));
+      opacity: 0.25;
+    }
+
+    .step-mini {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .step-mini:hover {
+      border-color: var(--teal);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .step-mini-num {
+      width: 56px; height: 56px;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--teal);
+      margin: 0 auto 1rem;
+      background: white;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-mini h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .step-mini p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* ── Testimonials ── */
+
+    /* ── Final CTA ── */
+    .final-cta {
+      background: linear-gradient(135deg, #0A1628 0%, #0f2a50 60%, #1a3566 100%);
+      border-radius: 24px;
+      padding: 5rem 3rem;
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,201,167,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .final-cta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,201,167,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,201,167,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .final-cta-inner { position: relative; z-index: 1; }
+
+    .final-cta h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: white;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .final-cta h2 span {
+      background: linear-gradient(135deg, #00C9A7, #4A8FE7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .final-cta p {
+      color: rgba(255,255,255,0.55);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .final-cta-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-cta-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.9rem 1.75rem;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-cta-outline:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: white;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 960px) {
+      .home-hero { grid-template-columns: 1fr; min-height: auto; padding: 4rem 0 3rem; }
+      .hero-right { display: none; }
+      .home-hero h1 { font-size: clamp(2.2rem, 6vw, 3rem); }
+      .feature-cards-row { grid-template-columns: 1fr; }
+      .steps-mini { grid-template-columns: 1fr; }
+      .steps-mini::before { display: none; }
+
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .final-cta { padding: 3rem 1.5rem; }
+    }
+
+    @media (max-width: 600px) {
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blobs" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="logo">
+      <i class="fa-solid fa-heart-pulse"></i>JU<span> AI</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="how-it-works.html">How it Works</a></li>
+      <li><a href="detect.html" class="nav-cta">Detect Disease</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+
+    <!-- ═══════════════════════════════
+         HERO
+    ═══════════════════════════════ -->
+    <section class="home-hero">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <div class="hero-badge-dot"></div>
+          AI-Powered Health Assistant · Instant Results
+        </div>
+
+        <h1>
+          Your health,<br>
+          <span class="gradient-text">understood faster.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Describe your symptoms in plain language. JU AI identifies potential conditions, finds the nearest hospital, and gives you a full action plan — all in under 10 seconds.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="detect.html" class="btn-hero-primary">
+            Analyze My Symptoms
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a href="how-it-works.html" class="btn-hero-ghost">
+            <i class="fa-solid fa-play" style="font-size:0.75rem;"></i>
+            See how it works
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="trust-avatars">
+            <div class="trust-avatar">🧑‍⚕️</div>
+            <div class="trust-avatar">👩‍💼</div>
+            <div class="trust-avatar">🧑‍🎓</div>
+            <div class="trust-avatar">👨‍👩‍👧</div>
+          </div>
+          <div class="trust-text">
+            Trusted by <strong>10,000+</strong> people for fast symptom insights
+          </div>
+        </div>
+      </div>
+
+      <!-- Animated mockup -->
+      <div class="hero-right">
+        <div class="mockup-stack">
+          <div class="mockup-bg-card"></div>
+
+          <div class="mockup-main-card">
+            <div class="mc-header">
+              <div class="mc-title">Symptom Analysis</div>
+              <div class="mc-live"><div class="mc-live-dot"></div> Analyzing…</div>
+            </div>
+
+            <div class="mc-input-box">
+              Severe headache behind my eyes, fever of 39°C, and fatigue for 2 days<span class="mc-typing-cursor"></span>
+            </div>
+
+            <div class="mc-progress-row">
+              <span>Processing</span>
+              <div class="mc-progress-bar"><div class="mc-progress-fill"></div></div>
+              <span>78%</span>
+            </div>
+
+            <div class="mc-result-row">
+              <div class="mc-result-icon"><i class="fa-solid fa-virus"></i></div>
+              <div>
+                <div class="mc-result-label">Potential condition</div>
+                <div class="mc-result-value">Viral Sinusitis</div>
+              </div>
+            </div>
+
+            <div class="mc-hospital-row">
+              <div class="mc-hospital-icon"><i class="fa-solid fa-hospital"></i></div>
+              <div>
+                <div class="mc-hospital-label">Nearest hospital</div>
+                <div class="mc-hospital-value">Lagos Island General Hospital</div>
+                <div class="mc-hospital-dist"><i class="fa-solid fa-location-dot"></i> 1.2 km away</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating badges -->
+          <div class="floating-badge fb-left">
+            <div class="fb-icon teal"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+              <div style="font-size:0.82rem; font-weight:700; color:#0A1628;">AI Accuracy</div>
+              <div style="font-size:0.72rem; color:#5A7A9A;">98% match rate</div>
+            </div>
+          </div>
+
+          <div class="floating-badge fb-right">
+            <div class="fb-icon blue"><i class="fa-solid fa-bolt"></i></div>
+            <div>
+              <div style="font-size:0.82rem; font-weight:700; color:#0A1628;">Response</div>
+              <div style="font-size:0.72rem; color:#5A7A9A;">&lt; 10 seconds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         STATS BAR
+    ═══════════════════════════════ -->
+    <div class="stats-bar">
+      <div class="stat-cell">
+        <div class="stat-cell-value">98<span>%</span></div>
+        <div class="stat-cell-label">Analysis Accuracy</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-value">&lt;10<span>s</span></div>
+        <div class="stat-cell-label">Average Response</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-value">10<span>k+</span></div>
+        <div class="stat-cell-label">People Helped</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-value">24<span>/7</span></div>
+        <div class="stat-cell-label">Always Available</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         FEATURES
+    ═══════════════════════════════ -->
+    <section class="feature-strip">
+      <div class="feature-strip-header">
+        <div class="section-tag"><i class="fa-solid fa-star"></i> Why JU AI</div>
+        <h2 class="strip-title">Everything you need<br>when it matters most</h2>
+        <p class="strip-sub">Three capabilities built specifically to get you from confusion to clarity — fast.</p>
+      </div>
+
+      <div class="feature-cards-row">
+        <div class="fhome-card card-teal">
+          <div class="fhc-icon"><i class="fa-solid fa-brain"></i></div>
+          <h3 class="fhc-title">Smart Symptom Analysis</h3>
+          <p class="fhc-body">Write exactly how you feel — no medical jargon needed. Our AI reads the full context of your symptoms and maps them to likely conditions with precision.</p>
+          <a href="features.html" class="fhc-link">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div class="fhome-card card-blue">
+          <div class="fhc-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <h3 class="fhc-title">Location-Aware Care</h3>
+          <p class="fhc-body">Enter your city and we instantly surface the nearest top-rated hospital — complete with address, phone number, and an embedded map to navigate directly.</p>
+          <a href="features.html" class="fhc-link">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div class="fhome-card card-light">
+          <div class="fhc-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h3 class="fhc-title">Full Plan in Seconds</h3>
+          <p class="fhc-body">No waiting. Get a breakdown of your likely condition, recommended medications, actionable next steps, and specialist types in under 10 seconds.</p>
+          <a href="features.html" class="fhc-link">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         HOW IT WORKS (MINI)
+    ═══════════════════════════════ -->
+    <section>
+      <div class="feature-strip-header">
+        <div class="section-tag"><i class="fa-solid fa-list-check"></i> Process</div>
+        <h2 class="strip-title">Ready in three steps</h2>
+        <p class="strip-sub">From your first symptom to having a hospital's address in hand — under a minute.</p>
+      </div>
+
+      <div class="steps-mini">
+        <div class="step-mini">
+          <div class="step-mini-num">1</div>
+          <h3>Describe Symptoms</h3>
+          <p>Type how you feel in plain language. The more detail, the more accurate the result.</p>
+        </div>
+        <div class="step-mini">
+          <div class="step-mini-num">2</div>
+          <h3>Share Location</h3>
+          <p>Enter your city or area so we can find the closest medical facilities near you.</p>
+        </div>
+        <div class="step-mini">
+          <div class="step-mini-num">3</div>
+          <h3>Get Your Results</h3>
+          <p>See the likely condition, nearest hospital, recommended drugs, and specialist to consult.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         FINAL CTA
+    ═══════════════════════════════ -->
+    <section class="final-cta">
+      <div class="final-cta-inner">
+        <h2>Stop guessing.<br><span>Get answers now.</span></h2>
+        <p>Enter your symptoms and location — our AI does the rest. Results in under 10 seconds, available 24/7, completely free.</p>
+        <div class="final-cta-actions">
+          <a href="detect.html" class="btn-hero-primary">
+            Analyze My Symptoms <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a href="features.html" class="btn-cta-outline">
+            <i class="fa-solid fa-star"></i> View Features
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 JU AI. All rights reserved. &nbsp;·&nbsp; Not a substitute for professional medical advice.</p>
+  </footer>
+
+  <button id="scroll-to-top" class="scroll-to-top-btn" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <script>
+    // Scroll to top
+    const scrollBtn = document.getElementById('scroll-to-top');
+    window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 300));
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Animate stat numbers on scroll
+    const statValues = document.querySelectorAll('.stat-cell-value');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeSlideUp 0.5s ease both';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    statValues.forEach(el => observer.observe(el));
+
+    // Stagger animate cards on scroll
+    const animateOnScroll = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = `fadeSlideUp 0.5s ease ${i * 0.1}s both`;
+          animateOnScroll.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fhome-card, .step-mini').forEach(el => {
+      el.style.opacity = '0';
+      animateOnScroll.observe(el);
+    });
+  </script>
+</body>
+</html>
